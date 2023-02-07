@@ -42,14 +42,29 @@ namespace EFCoreTesting.Controllers
         [Route("Create")]
         public async Task<ActionResult<List<Client>>> AddClient(ClientDTO request)
         {
-            var client = new Client()
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                Name = request.Name,
-                UserId = userID,
-                GUID = request.GUID,
-            };
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
+                try
+                {
+                    var client = new Client
+                    {
+                        Name = request.Name,
+                        UserId = userID,
+                        GUID = request.GUID,
+                    };
+
+                    _context.Clients.Add(client);
+                    await _context.SaveChangesAsync();
+
+                    // Call transaction.Commit to persist the changes to the database
+                    transaction.Commit();
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
             return Ok(await _context.Clients.ToListAsync());
         }
 
