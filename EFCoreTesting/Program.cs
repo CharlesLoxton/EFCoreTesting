@@ -1,5 +1,6 @@
 global using EFCoreTesting.Data;
 global using Microsoft.EntityFrameworkCore;
+global using IntegrationLibrary;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,9 @@ builder.Services.AddDbContext<KDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<Integration>(provider => new Integration(provider.GetService<KDBContext>()));
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -28,6 +32,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseFileServer();
 
 app.UseAuthorization();
 
