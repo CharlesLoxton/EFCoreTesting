@@ -1,4 +1,6 @@
 ﻿using EFCoreTesting.DTO;
+using IntegrationLibrary.Interfaces;
+using IntegrationLibrary.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +14,7 @@ namespace EFCoreTesting.Controllers
 
         private readonly KDBContext _context;
         private readonly Integration _integration;
-        private int userID = 123;
+        private int userID = 1;
         public IntegrationController(KDBContext context, Integration integration)
         {
             _context = context;
@@ -31,8 +33,11 @@ namespace EFCoreTesting.Controllers
         {
             try
             {
-                string res = await _integration.GetAccessCode(request.code, "QuickBooks");
-                return Ok(res);
+                IGateway gateway = new Gateway(userID);
+                AuthTokenResponse res = await _integration.GetAccessCode(request.code, request.ProviderName, request.CompanyId);
+                _integration.SaveAccessCode(res, gateway);
+
+                return Ok("Success");
             }
             catch(Exception ex)
             {

@@ -1,4 +1,6 @@
-﻿using IntegrationLibrary.Interfaces;
+﻿using IntegrationLibrary;
+using IntegrationLibrary.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreTesting.Data
 {
@@ -22,7 +24,10 @@ namespace EFCoreTesting.Data
 
         public string RetrieveIntegrationID(DbContext context)
         {
-            throw new NotImplementedException();
+            KDBContext _context = (KDBContext)context;
+            var dbUser = _context.Users.Find(userID);
+
+            return dbUser.IntegrationId;
         }
 
         public void SaveGUID(DbContext context, IEntity entity, string guid)
@@ -30,9 +35,18 @@ namespace EFCoreTesting.Data
             throw new NotImplementedException();
         }
 
-        public void SaveIntegrationID(DbContext kDBcontext, string integrationID)
+        public void SaveIntegrationID(DbContext context, string integrationID)
         {
             Console.WriteLine("Saving Integration ID: " + integrationID);
+            KDBContext _context = (KDBContext)context;
+            var dbUser = _context.Users.Find(userID);
+
+            if(dbUser != null)
+            {
+                dbUser.IntegrationId = integrationID;
+
+                _context.SaveChanges();
+            }
         }
     }
 }
