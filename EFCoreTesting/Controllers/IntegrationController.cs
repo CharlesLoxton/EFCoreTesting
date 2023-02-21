@@ -1,4 +1,4 @@
-﻿using IntegrationLibrary.Interfaces;
+﻿using EFCoreTesting.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,25 +22,22 @@ namespace EFCoreTesting.Controllers
         [HttpGet("StartConnection/{provider}")]
         public IActionResult StartConnection(string provider)
         {
-            IGateway gateway = new Gateway(userID);
-            return _integration.CreateConnection(provider, gateway);
+            return _integration.CreateConnection(provider);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Index()
+        [HttpPost]
+        [Route("SaveCode")]
+        public async Task<ActionResult> SaveCode([FromBody] CodeDTO request)
         {
-            //string code = Request.QueryString["code"] ?? "none";
-            //string realmId = Request.QueryString["companyID"] ?? "none";
-            //await GetAuthTokensAsync(code, realmId);
-            return Redirect("");
-        }
-
-        private async Task GetAuthTokensAsync(string code, string realmId)
-        {
-
-            //var tokenResponse = await auth2Client.GetBearerTokenAsync(code);
-            //var accessToken = tokenResponse.AccessToken;
-            //var refreshToken = tokenResponse.RefreshToken;
+            try
+            {
+                string res = await _integration.GetAccessCode(request.code, "QuickBooks");
+                return Ok(res);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
