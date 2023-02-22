@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <Reference Include="IntegrationLibrary">
-      <HintPath>..\..\..\..\OneDrive\Documents\EPI_USE\Projects\KostSoft\IL_Dev\IntegrationLibrary\bin\Debug\netcoreapp3.1\IntegrationLibrary.dll</HintPath>
+      <HintPath>..\..\IntegrationLibrary\IntegrationLibrary\bin\Debug\netcoreapp3.1\IntegrationLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
 
