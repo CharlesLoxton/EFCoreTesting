@@ -1,4 +1,6 @@
-﻿using IntegrationLibrary.Interfaces;
+﻿using EFCoreTesting.DTO;
+using IntegrationLibrary.Interfaces;
+using IntegrationLibrary.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +14,7 @@ namespace EFCoreTesting.Controllers
 
         private readonly KDBContext _context;
         private readonly Integration _integration;
-        private int userID = 123;
+        private int userID = 1;
         public IntegrationController(KDBContext context, Integration integration)
         {
             _context = context;
@@ -22,25 +24,25 @@ namespace EFCoreTesting.Controllers
         [HttpGet("StartConnection/{provider}")]
         public IActionResult StartConnection(string provider)
         {
-            IGateway gateway = new Gateway(userID);
-            return _integration.CreateConnection(provider, gateway);
+            return _integration.CreateConnection(provider);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Index()
+        [HttpPost]
+        [Route("SaveCode")]
+        public async Task<ActionResult> SaveCode([FromBody] CodeDTO request)
         {
-            //string code = Request.QueryString["code"] ?? "none";
-            //string realmId = Request.QueryString["companyID"] ?? "none";
-            //await GetAuthTokensAsync(code, realmId);
-            return Redirect("");
-        }
+            try
+            {
+                IGateway gateway = new Gateway(userID);
+                AuthTokenResponse res = await _integration.GetAccessCode(request.code, request.ProviderName, request.CompanyId);
+                _integration.SaveAccessCode(res, gateway);
 
-        private async Task GetAuthTokensAsync(string code, string realmId)
-        {
-
-            //var tokenResponse = await auth2Client.GetBearerTokenAsync(code);
-            //var accessToken = tokenResponse.AccessToken;
-            //var refreshToken = tokenResponse.RefreshToken;
+                return Ok("Success");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
