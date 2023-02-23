@@ -3,7 +3,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const realmId = urlParams.get('realmId');
-    const providerName = "Xero";
+    let providerName = "Xero";
 
     if (code != null) {
 
