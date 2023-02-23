@@ -34,8 +34,7 @@ namespace EFCoreTesting.Controllers
             try
             {
                 IGateway gateway = new Gateway(userID);
-                AuthTokenResponse res = await _integration.GetAccessCode(request.code, request.ProviderName, request.CompanyId);
-                await _integration.SaveAccessCode(res, gateway);
+                await _integration.GetAccessCode(request.code, request.ProviderName, gateway, request.CompanyId);
 
                 return Ok("Success");
             }

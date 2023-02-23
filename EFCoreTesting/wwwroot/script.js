@@ -3,8 +3,14 @@
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const realmId = urlParams.get('realmId');
+    const providerName = "Xero";
 
     if (code != null) {
+
+        if (realmId != null) {
+            providerName = "QuickBooks";
+        }
+        
         fetch("/api/Integration/SaveCode", {
             method: 'POST',
             headers: {
@@ -13,7 +19,7 @@
             body: JSON.stringify({
                 code: code,
                 CompanyId: realmId,
-                ProviderName: "QuickBooks",
+                ProviderName: providerName,
             })
         })
             .then(response => {
