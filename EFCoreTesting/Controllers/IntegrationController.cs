@@ -34,7 +34,7 @@ namespace EFCoreTesting.Controllers
             try
             {
                 IGateway gateway = new Gateway(userID);
-                await _integration.GetAccessCode(request.code, request.ProviderName, gateway, request.CompanyId);
+                await _integration.Authenticate(request.code, request.ProviderName, gateway, request.CompanyId);
 
                 return Ok("Success");
             }
