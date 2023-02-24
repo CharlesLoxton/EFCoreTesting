@@ -27,6 +27,20 @@ namespace EFCoreTesting.Controllers
             return _integration.CreateConnection(provider);
         }
 
+        [HttpGet("GetCompanyList/{code}")]
+        public async Task<ActionResult> GetCompanyList(string code)
+        {
+            try
+            {
+                return Ok(await _integration.GetSageCompanyList(code));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            
+        }
+
         [HttpPost]
         [Route("SaveCode")]
         public async Task<ActionResult> SaveCode([FromBody] CodeDTO request)
