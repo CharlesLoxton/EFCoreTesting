@@ -66,15 +66,14 @@ namespace EFCoreTesting.Controllers
                     _context.Clients.Add(client);
                     await _context.SaveChangesAsync();
 
+                    // Call Upsert to add the client to the accounting provider
+                    _integration.CreateAccountingProvider(gateway).Upsert(client);
+
                     // Call transaction.Commit to persist the changes to the database
                     transaction.Commit();
 
-                    // Query the database to retrieve the newly created client and upsert to Accounting Provider
-                    var newClient = await _context.Clients.FindAsync(client.Id);
-                    _integration.CreateAccountingProvider(gateway).Upsert(newClient);
-
                     // Return the newly created client
-                    return Ok(newClient);
+                    return Ok(client);
                 }
                 catch(Exception ex)
                 {
