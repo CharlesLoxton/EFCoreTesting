@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using EFCoreTesting.DTO;
 using EFCoreTesting.Models;
+using IntegrationLibrary.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace EFCoreTesting.Controllers
     public class ClientController : ControllerBase
     {
         private readonly KDBContext _context;
+        private readonly Integration _integration;
         private int userID = 1;
-        public ClientController(KDBContext context)
+        public ClientController(KDBContext context, Integration integration)
         {
             _context = context;
+            _integration = integration;
         }
 
         [HttpGet]
@@ -42,36 +45,43 @@ namespace EFCoreTesting.Controllers
         [Route("Create")]
         public async Task<ActionResult<List<Client>>> AddClient(ClientDTO request)
         {
+            IGateway gateway = new Gateway(userID);
+
+            var client = new Client
+            {
+                CompanyName = request.CompanyName,
+                isCompany = request.isCompany,
+                Name = request.Name,
+                Number = request.Number,
+                Email = request.Email,
+                CCEmails = request.CCEmails,
+                VATNumber = request.VATNumber,
+                UserId = userID,
+            };
+
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var client = new Client
-                    {
-                        CompanyName = request.CompanyName,
-                        isCompany = request.isCompany,
-                        Name = request.Name,
-                        Number = request.Number,
-                        Email = request.Email,
-                        CCEmails = request.CCEmails,
-                        VATNumber = request.VATNumber,
-                        UserId = userID,
-                    };
-
-
                     _context.Clients.Add(client);
                     await _context.SaveChangesAsync();
 
                     // Call transaction.Commit to persist the changes to the database
                     transaction.Commit();
+
+                    // Query the database to retrieve the newly created client and upsert to Accounting Provider
+                    var newClient = await _context.Clients.FindAsync(client.Id);
+                    _integration.CreateAccountingProvider(gateway).Upsert(newClient);
+
+                    // Return the newly created client
+                    return Ok(newClient);
                 }
                 catch(Exception ex)
                 {
                     transaction.Rollback();
+                    return BadRequest(ex.Message);
                 }
             }
-
-            return Ok(await _context.Clients.ToListAsync());
         }
 
         [HttpPut]
