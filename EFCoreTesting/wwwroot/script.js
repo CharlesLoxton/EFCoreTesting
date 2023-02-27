@@ -23,10 +23,44 @@
             })
         })
             .then(response => {
-                console.log(response);
+                alert("Successfully connected to " + providerName + "!");
             })
             .catch(error => {
-                console.error(error);
+                alert(error);
             });
     }
+}
+
+function disconnect() {
+
+    fetch("/api/Integration/Disconnect", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        })
+        .then(response => {
+            alert("Successfully disconnected!");
+        })
+        .catch(error => {
+            alert(error);
+        });
+    
+}
+
+function refreshToken() {
+
+    fetch("/api/Integration/RefreshToken", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            alert("Successfully refreshed the token!");
+        })
+        .catch(error => {
+            alert(error);
+        });
+
 }

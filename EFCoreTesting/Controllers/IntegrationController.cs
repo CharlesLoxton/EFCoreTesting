@@ -21,11 +21,19 @@ namespace EFCoreTesting.Controllers
             _integration = integration;
         }
 
+      
+      
         [HttpGet("StartConnection/{provider}")]
-        public IActionResult StartConnection(string provider)
-        {
-            return _integration.CreateConnection(provider);
+        public IActionResult StartConnection(string provider) {
+            try {
+                IGateway gateway = new Gateway(userID);
+                return _integration.CreateConnection(provider, gateway);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }  
         }
+
 
         [HttpPost]
         [Route("SaveCode")]
@@ -39,6 +47,40 @@ namespace EFCoreTesting.Controllers
                 return Ok("Success");
             }
             catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Disconnect")]
+        public async Task<ActionResult> Disconnect()
+        {
+            try
+            {
+                IGateway gateway = new Gateway(userID);
+                await _integration.Disconnect(gateway);
+
+                return Ok("Success");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("RefreshToken")]
+        public async Task<ActionResult> RefreshToken()
+        {
+            try
+            {
+                IGateway gateway = new Gateway(userID);
+                await _integration.RefreshAccessCode(gateway);
+
+                return Ok("Success");
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
