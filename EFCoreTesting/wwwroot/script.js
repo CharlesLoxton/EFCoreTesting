@@ -23,10 +23,16 @@
             })
         })
             .then(response => {
-                alert("Successfully connected to " + providerName + "!");
+                if (response.status === 500) {
+                    alert("The server encountered an unexpected condition that prevented it from fulfilling the request");
+                } else if (response.status === 400) {
+                    alert("Unauthorized access. Please make sure you enter the correct email and password when authenticating with your accounting pacakge");
+                } else {
+                    alert("Succesfully connected to " + providerName);
+                } 
             })
             .catch(error => {
-                alert(error);
+                console.log(error)
             });
     }
 }
@@ -37,15 +43,18 @@ function disconnect() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        }
+            }
         })
-        .then(response => {
-            alert("Successfully disconnected!");
-        })
-        .catch(error => {
-            alert(error);
-        });
-    
+            .then(response => {
+            if (response.status === 500 || response.status === 400) {
+                alert("You must be connected to an accounting package to disconnect");
+            } else {
+                alert("Successfully disconnected");;
+            }  
+            })
+            .catch(error => {
+            console.log(error)
+            }); 
 }
 
 function refreshToken() {
@@ -57,10 +66,14 @@ function refreshToken() {
         }
     })
         .then(response => {
-            alert("Successfully refreshed the token!");
+            if (response.status === 500 || response.status === 400) {
+                alert("You must be connected to an accounting package to refresh a token");
+            } else {
+                alert("Successfully refreshed token");
+            }
         })
         .catch(error => {
-            alert(error);
+           console.log(error)
         });
 
 }
