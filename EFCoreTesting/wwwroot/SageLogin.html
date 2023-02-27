@@ -7,17 +7,21 @@
 </head>
 <body>
     <form>
-        <label>Username:</label>
-        <input type="text" />
-        <label>Password:</label>
-        <input type="text" />
-        <label>Company:</label>
-        <select>
-            <option value="company1">ABC Company</option>
-            <option value="company2">Meow Company</option>
-            <option value="company3">IDK Company</option>
-        </select>
-        <button type="button">Integrate</button>
+        <img src="/images/SageLogo.png" style="max-width: 150px;" />
+        <div id="inputSection">
+            <label>Username:</label>
+            <input type="text" id="username" />
+            <label>Password:</label>
+            <input type="password" id="password" />
+            <p id="errorMessage" style="color: red; display: none">Invalid credentials</p>
+        </div>
+        <div id="DropDown" style="display: none">
+            <label>Company:</label>
+            <select id="companyOptions">
+            </select>
+        </div>
+        <button type="button" id="connectBtn">Login</button>
     </form>
+    <script src="SageLoginScript.js"></script>
 </body>
 </html>

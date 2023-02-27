@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Reference Include="IntegrationLibrary">
-      <HintPath>..\..\..\kost_integration_project\IntegrationLibrary\IntegrationLibrary\bin\Debug\netcoreapp3.1\IntegrationLibrary.dll</HintPath>
+      <HintPath>..\..\IntegrationLibrary\IntegrationLibrary\bin\Debug\netcoreapp3.1\IntegrationLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
 
