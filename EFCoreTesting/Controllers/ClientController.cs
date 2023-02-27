@@ -66,22 +66,12 @@ namespace EFCoreTesting.Controllers
                     _context.Clients.Add(client);
                     await _context.SaveChangesAsync();
 
+                    _integration.CreateAccountingProvider(gateway).Upsert(client);
+
                     // Call transaction.Commit to persist the changes to the database
                     transaction.Commit();
 
-                    // Call Upsert to add the client to the accounting provider
-                    try
-                    {
-                        _integration.CreateAccountingProvider(gateway).Upsert(client);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Roll back the transaction to undo the changes to the database
-                        transaction.Rollback();
-                        return BadRequest(ex.Message);
-                    }
-
-                    // Return the newly created client
+                    
                     return Ok(client);
                 }
                 catch(Exception ex)
