@@ -54,6 +54,7 @@ namespace EFCoreTesting.Controllers
                         Number = request.Number,
                         Email = request.Email,
                         CCEmails = request.CCEmails,
+                        VATNumber = request.VATNumber,
                         UserId = userID,
                     };
 
