@@ -12,7 +12,7 @@ namespace EFCoreTesting.Controllers
     public class ClientController : ControllerBase
     {
         private readonly KDBContext _context;
-        private int userID = 123;
+        private int userID = 1;
         public ClientController(KDBContext context)
         {
             _context = context;
@@ -48,10 +48,15 @@ namespace EFCoreTesting.Controllers
                 {
                     var client = new Client
                     {
+                        CompanyName = request.CompanyName,
+                        isCompany = request.isCompany,
                         Name = request.Name,
+                        Number = request.Number,
+                        Email = request.Email,
+                        CCEmails = request.CCEmails,
                         UserId = userID,
-                        GUID = request.GUID,
                     };
+
 
                     _context.Clients.Add(client);
                     await _context.SaveChangesAsync();
@@ -79,8 +84,12 @@ namespace EFCoreTesting.Controllers
                 return BadRequest("Client not found");
             };
 
-            dbClient.Name= request.Name;
-            dbClient.GUID= request.GUID;
+            dbClient.CompanyName = request.CompanyName;
+            dbClient.isCompany = request.isCompany;
+            dbClient.Name = request.Name;
+            dbClient.Number = request.Number;
+            dbClient.Email = request.Email;
+            dbClient.CCEmails = request.CCEmails;
 
             //This fixes the concurrency issues, we will have to tell Neil to do this.
             //It checks if the object is being updated in the database and if so the second concurrent request
