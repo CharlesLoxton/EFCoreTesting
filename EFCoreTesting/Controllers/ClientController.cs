@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using EFCoreTesting.Data;
 using EFCoreTesting.DTO;
 using EFCoreTesting.Models;
 using IntegrationLibrary.Interfaces;
@@ -86,6 +87,8 @@ namespace EFCoreTesting.Controllers
         [Route("Update")]
         public async Task<ActionResult<List<Client>>> UpdateClient(Client request)
         {
+            IGateway gateway = new Gateway(userID);
+
             var dbClient = await _context.Clients.FindAsync(request.Id);
 
             if (dbClient == null)
@@ -107,14 +110,31 @@ namespace EFCoreTesting.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+
+                        _integration.CreateAccountingProvider(gateway).Upsert(dbClient);
+
+                        // Call transaction.Commit to persist the changes to the database
+                        transaction.Commit();
+
+
+                        return Ok(dbClient);
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return BadRequest(ex.Message);
+                    }
+                }
             }
             catch (DbUpdateConcurrencyException ex)
             {
                 return Conflict();
             }
-
-            return Ok(await _context.Clients.ToListAsync());
         }
 
         [HttpDelete("Delete/{id}")]
