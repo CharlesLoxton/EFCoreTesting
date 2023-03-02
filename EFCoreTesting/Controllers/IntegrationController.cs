@@ -57,6 +57,8 @@ namespace EFCoreTesting.Controllers
                 IGateway gateway = new Gateway(userID);
                 await _integration.Authenticate(request.code, request.ProviderName, gateway, request.CompanyId);
 
+                _integration.CreateAccountingProvider(gateway).Sync();
+
                 return Ok("Success");
             }
             catch(Exception ex)
