@@ -1,4 +1,6 @@
-﻿using IntegrationLibrary;
+﻿using Azure.Core;
+using EFCoreTesting.Models;
+using IntegrationLibrary;
 using IntegrationLibrary.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +16,37 @@ namespace EFCoreTesting.Data
 
         public void AddClient(DbContext context, IClient client)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Adding clients from Accounting Provider");
+            var dbClient = new Client
+            {
+                CompanyName = client.CompanyName,
+                isCompany = true,
+                Name = client.Name,
+                Number = client.Number,
+                Email = client.Email,
+                VATNumber = client.VATNumber,
+                UserId = userID,
+                Guid = client.Guid,
+            };
+
+            KDBContext _context = (KDBContext)context;
+            _context.Clients.Add(dbClient);
+            _context.SaveChanges();
         }
 
         public IEnumerable<IEntity> RetrieveAllEntities(DbContext context, string entityName)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Retrieving All Clients to Sync");
+            if (entityName == "Client")
+            {
+                KDBContext _context = (KDBContext)context;
+                var clientList = _context.Clients.Where(x => x.UserId == userID).ToList();
+                Console.WriteLine("Found this many clients for user: " + clientList.Count);
+                foreach (var client in clientList)
+                {
+                    yield return client;
+                }
+            }
         }
 
         public string RetrieveIntegrationID(DbContext context)
