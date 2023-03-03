@@ -9,34 +9,35 @@
 <body>
     <script src="script.js"></script>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="dropdown">
-                    <button class="dropbtn">Integrate</button>
-                    <div class="dropdown-content">
-                        <a href="/api/Integration/StartConnection/Sage">Sage</a>
-                        <a href="/api/Integration/StartConnection/Xero">Xero</a>
-                        <a href="/api/Integration/StartConnection/QuickBooks">QuickBooks</a>
-                    </div>
 
-                </div>
 
-            </div>
-            <div class="col-sm-4">
 
-                <button type="button" class="dropbtn" onclick="disconnect()">Disconnect</button>
-            </div>
-            <div class="col-sm-4">
+    <div class="d-flex justify-content-around">
 
-                <button type="button" class="dropbtn" onclick="refreshToken()">Refresh Token</button>
+        <div class="dropdown">
+            <button class="dropbtn buttonSync">Integrate</button>
+            <div class="dropdown-content">
+                <a href="/api/Integration/StartConnection/Sage">Sage</a>
+                <a href="/api/Integration/StartConnection/Xero">Xero</a>
+                <a href="/api/Integration/StartConnection/QuickBooks">QuickBooks</a>
             </div>
 
         </div>
 
 
+
+        <button type="button" class="buttonStyled" style="background-color: #E1341E; border-color: #E1341E" onclick="disconnect()">Disconnect</button>
+
+
+        <button type="button" class="buttonStyled" style="background-color: #1ECBE1; border-color: #1ECBE1" onclick="refreshToken()">Refresh</button>
+
+
+
+
     </div>
 
     
+
+
 </body>
 </html>

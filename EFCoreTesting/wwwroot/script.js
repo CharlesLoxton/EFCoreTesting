@@ -10,7 +10,7 @@
         if (realmId != null) {
             providerName = "QuickBooks";
         }
-        
+
         fetch("/api/Integration/SaveCode", {
             method: 'POST',
             headers: {
@@ -21,21 +21,18 @@
                 CompanyId: realmId,
                 ProviderName: providerName,
             })
-        })
-            .then(response => {
-                if (response.status === 500) {
-                    alert("The server encountered an unexpected condition that prevented it from fulfilling the request");
-                } else if (response.status === 400) {
-                    alert("Unauthorized access. Please make sure you enter the correct email and password when authenticating with your accounting pacakge");
-                } else {
-                    alert("Succesfully connected to " + providerName);
-                } 
+        }).then(response => {
+            if (response.ok) {
+                alert("Succesfully connected to " + providerName);
+            } 
+        }).catch(error => {
+                alert(error)
             })
-            .catch(error => {
-                console.log(error)
-            });
     }
 }
+
+
+
 
 function disconnect() {
 
