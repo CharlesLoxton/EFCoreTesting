@@ -2,6 +2,7 @@ global using EFCoreTesting.Data;
 global using Microsoft.EntityFrameworkCore;
 global using IntegrationLibrary;
 using System.Net;
+using IntegrationLibrary.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<KDBContext>(options =>
 });
 
 builder.Services.AddScoped<Integration>(provider => new Integration(provider.GetService<KDBContext>()));
+//To enable Webhooks
+builder.Services.AddScoped<IGateway, Gateway>(provider => new Gateway(0));
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

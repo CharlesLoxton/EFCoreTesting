@@ -34,6 +34,30 @@ namespace EFCoreTesting.Data
             _context.SaveChanges();
         }
 
+        public void AddClientByIntegrationId(DbContext context, IClient client, string integrationId)
+        {
+            KDBContext _context = (KDBContext)context;
+            var users = _context.Users.Where(x => x.IntegrationId == integrationId).ToList();
+
+            foreach(var user in users)
+            {
+                var dbClient = new Client
+                {
+                    CompanyName = client.CompanyName,
+                    isCompany = true,
+                    Name = client.Name,
+                    Number = client.Number,
+                    Email = client.Email,
+                    VATNumber = client.VATNumber,
+                    UserId = user.UserId,
+                    Guid = client.Guid,
+                };
+
+                _context.Clients.Add(dbClient);
+            }
+            _context.SaveChanges();
+        }
+
         public IEnumerable<IEntity> RetrieveAllEntities(DbContext context, string entityName)
         {
             Console.WriteLine("Retrieving All Clients to Sync");
@@ -75,6 +99,30 @@ namespace EFCoreTesting.Data
 
                 _context.SaveChanges();
             }
+        }
+
+        public void UpdateEntityByGuid(DbContext context, string guid, IEntity entity)
+        {
+            KDBContext _context = (KDBContext)context;
+
+            if (entity is IClient)
+            {
+                var client = (IClient)entity;
+
+                var dbClients = _context.Clients.Where(x => x.Guid == guid).ToList();
+
+                foreach(var item in dbClients)
+                {
+                    item.CompanyName = client.CompanyName;
+                    item.Name = client.Name;
+                    item.Email = client.Email;
+                    item.Number= client.Number;
+                    item.VATNumber = client.VATNumber;
+                    item.Guid = client.Guid;
+                }
+            }
+
+            context.SaveChanges();
         }
     }
 }
